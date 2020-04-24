@@ -7,20 +7,15 @@ import mysql.connector
 
 # A listener class for listening to tweets
 class Listener(tweepy.StreamListener):
+    # Remove the non-ASCII characters (emojis)
     def remove_emojis(self, text):
-        # Remove the non-ASCII characters (emojis)
         if text:
             return text.encode("ascii", "ignore").decode("ascii")
         else:
             return None
 
-    def on_error(self, status_code):
-        # Stop scraping if the rate exceeds the maximum limit
-        if status_code == 420:
-            return False
-
+    # Extract the information from tweets
     def on_status(self, status):
-        # Extract the information from tweets
         id_str = status.id_str
         created_at = status.created_at
         text = self.remove_emojis(status.text)
@@ -44,13 +39,21 @@ class Listener(tweepy.StreamListener):
 
         if my_db.is_connected():
             my_cursor = my_db.cursor()
-            sql = "INSERT INTO {} (id_str, created_at, text, polarity, subjectivity, user_location, user_description, longitude, latitude, retweet_count, favorite_count) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(
-                settings.TABLE_NAME)
-            val = (id_str, created_at, text, polarity, subjectivity, user_location, \
+            sql = "INSERT INTO {} (id_str, created_at, text, polarity, subjectivity, user_location, \
+            user_description, longitude, latitude, retweet_count, favorite_count) \
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" \
+                .format(settings.TABLE_NAME)
+            val = (id_str, created_at, text, polarity, subjectivity, user_location,
                    user_description, longitude, latitude, retweet_count, favorite_count)
             my_cursor.execute(sql, val)
             my_db.commit()
             my_cursor.close()
+
+    # Stop scraping if the rate exceeds the maximum limit
+    def on_error(self, status_code):
+        if status_code == 420:
+            return False
+
 
 # Create and connect with a MySQL database for storage
 my_db = mysql.connector.connect(
@@ -70,7 +73,7 @@ if my_db.is_connected():
         WHERE table_name = '{0}'
         """.format(settings.TABLE_NAME))
     if my_cursor.fetchone()[0] != 1:
-        my_cursor.execute("CREATE TABLE {} ({})" \
+        my_cursor.execute("CREATE TABLE {} ({})"
                           .format(settings.TABLE_NAME, settings.TABLE_ATTRIBUTES))
         my_db.commit()
     my_cursor.close()
