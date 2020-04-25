@@ -6,10 +6,11 @@ import credentials
 
 
 class TweetListener(tweepy.StreamListener):
-    def __init__(self):
+    def __init__(self, brand_name):
         super().__init__()
         self.producer = KafkaProducer(bootstrap_servers="localhost:9092", api_version=(0, 10, 1),
                                       value_serializer=lambda m: json.dumps(m).encode('ascii'))
+        self.brand_name = brand_name
 
     def clean_tweet(self, raw_data):
         json_data = json.loads(raw_data)
@@ -29,7 +30,7 @@ class TweetListener(tweepy.StreamListener):
 
     def on_data(self, raw_data):
         clean_data = self.clean_tweet(raw_data)
-        self.producer.send("coronavirus", clean_data)
+        self.producer.send(self.brand_name.replace("#", ""), clean_data)
         print(clean_data)
 
     def on_error(self, status_code):
@@ -37,8 +38,9 @@ class TweetListener(tweepy.StreamListener):
 
 
 if __name__ == "__main__":
-    listener = TweetListener()
+    brand_name = input("Enter a hashtag: ")
+    listener = TweetListener(brand_name)
     auth = tweepy.OAuthHandler(credentials.API_KEY, credentials.API_SECRET_KEY)
     auth.set_access_token(credentials.ACCESS_TOKEN, credentials.ACCESS_TOKEN_SECRET)
     stream = tweepy.Stream(auth, listener, tweet_mode="extended")
-    stream.filter(track=["#coronavirus"], languages=["en"])
+    stream.filter(track=[brand_name], languages=["en"])
