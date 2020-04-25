@@ -29,6 +29,11 @@ class TweetListener(tweepy.StreamListener):
 
     def on_data(self, raw_data):
         clean_data = self.clean_tweet(raw_data)
+        self.producer.send("coronavirus", clean_data)
+        print(clean_data)
+
+    def on_error(self, status_code):
+        print(status_code)
 
 
 if __name__ == "__main__":
