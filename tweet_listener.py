@@ -3,6 +3,9 @@ import tweepy
 import json
 from kafka import KafkaProducer
 import credentials
+from pyspark import SparkContext
+from pyspark.streaming import StreamingContext
+from pyspark.streaming.kafka import KafkaUtils
 
 
 class TweetListener(tweepy.StreamListener):
@@ -35,12 +38,35 @@ class TweetListener(tweepy.StreamListener):
 
     def on_error(self, status_code):
         print(status_code)
+        return True
+
+    def on_timeout(self):
+        return True
 
 
-if __name__ == "__main__":
-    brand_name = input("Enter a hashtag: ")
+def start_twitter_stream():
     listener = TweetListener(brand_name)
     auth = tweepy.OAuthHandler(credentials.API_KEY, credentials.API_SECRET_KEY)
     auth.set_access_token(credentials.ACCESS_TOKEN, credentials.ACCESS_TOKEN_SECRET)
     stream = tweepy.Stream(auth, listener, tweet_mode="extended")
     stream.filter(track=[brand_name], languages=["en"])
+
+
+def process():
+    pass
+
+
+def start_spark_streaming():
+    sc = SparkContext(appName="TwitterStreaming")
+    ssc = StreamingContext(sc, 3)
+    kafka_stream = KafkaUtils.createStream(ssc, "localhost:2181", "consumer-group", {brand_name: 1})
+    lines = kafka_stream.map(lambda x: json.loads(x[1]))
+    lines.foreachRDD(process)
+    ssc.start()
+    ssc.awaitTermination()
+
+
+if __name__ == "__main__":
+    brand_name = input("Enter a hashtag: ")
+    start_twitter_stream()
+    start_spark_streaming()
