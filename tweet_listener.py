@@ -7,6 +7,8 @@ from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
 
+brand = str
+
 
 class TweetListener(tweepy.StreamListener):
     def __init__(self, brand_name):
@@ -52,21 +54,6 @@ def start_twitter_stream():
     stream.filter(track=[brand_name], languages=["en"])
 
 
-def process():
-    pass
-
-
-def start_spark_streaming():
-    sc = SparkContext(appName="TwitterStreaming")
-    ssc = StreamingContext(sc, 3)
-    kafka_stream = KafkaUtils.createStream(ssc, "localhost:2181", "consumer-group", {brand_name: 1})
-    lines = kafka_stream.map(lambda x: json.loads(x[1]))
-    lines.foreachRDD(process)
-    ssc.start()
-    ssc.awaitTermination()
-
-
 if __name__ == "__main__":
-    brand_name = input("Enter a hashtag: ")
+    brand = input("Enter a hashtag: ")
     start_twitter_stream()
-    start_spark_streaming()
