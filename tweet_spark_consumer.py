@@ -14,10 +14,10 @@ def sentiment_analysis():
 conf = SparkConf().setMaster("local[*]").setAppName("TwitterStream")
 sc = SparkContext()
 ssc = StreamingContext(sc, 5)
-
-kafka_stream = KafkaUtils.createStream(ssc, "localhost:2181", "consumer-group", {tweet_listener.brand: 1})
+topic = tweet_listener.brand
+kafka_stream = KafkaUtils.createStream(ssc, "localhost:2181", "consumer-group", {topic: 1})
 lines = kafka_stream.map(lambda x: json.loads(x[1]))
-lines.foreachRDD(sentiment_analysis)
-
+#lines.foreachRDD(sentiment_analysis)
+lines.pprint()
 ssc.start()
 ssc.awaitTermination()
