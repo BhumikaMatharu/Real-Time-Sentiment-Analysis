@@ -3,9 +3,7 @@ import tweepy
 import json
 from kafka import KafkaProducer
 import credentials
-from pyspark import SparkContext
-from pyspark.streaming import StreamingContext
-from pyspark.streaming.kafka import KafkaUtils
+
 
 brand = str
 
@@ -47,11 +45,11 @@ class TweetListener(tweepy.StreamListener):
 
 
 def start_twitter_stream():
-    listener = TweetListener(brand_name)
+    listener = TweetListener(brand)
     auth = tweepy.OAuthHandler(credentials.API_KEY, credentials.API_SECRET_KEY)
     auth.set_access_token(credentials.ACCESS_TOKEN, credentials.ACCESS_TOKEN_SECRET)
     stream = tweepy.Stream(auth, listener, tweet_mode="extended")
-    stream.filter(track=[brand_name], languages=["en"])
+    stream.filter(track=[brand], languages=["en"])
 
 
 if __name__ == "__main__":
