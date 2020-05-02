@@ -2,3 +2,6 @@ zookeeper-server-start.bat C:\Apache\kafka_2.12-2.5.0\config\zookeeper.propertie
 kafka-server-start.bat C:\Apache\kafka_2.12-2.5.0\config\server.properties
 kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic google
 
+cd %SPARK_HOME%
+bin\spark-submit --master local[*] --packages org.apache.spark:spark-streaming-kafka-0–8_2.11:2.0.0 C:\Users\prath\PycharmProjects\Real-Time-Sentiment-Analysis\tweet_spark_consumer.py
+bin\spark-submit --master local[*] --jars external/kafka-assembly/target/scala-*/spark-streaming-kafka-assembly-*.jar C:\Users\prath\PycharmProjects\Real-Time-Sentiment-Analysis\tweet_spark_consumer.py
