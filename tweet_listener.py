@@ -11,8 +11,6 @@ brand = str
 class TweetListener(tweepy.StreamListener):
     def __init__(self, brand_name):
         super().__init__()
-        self.producer = KafkaProducer(bootstrap_servers="localhost:9092", api_version=(0, 10, 1),
-                                      value_serializer=lambda m: json.dumps(m).encode('ascii'))
         self.brand_name = brand_name
 
     def clean_tweet(self, raw_data):
@@ -33,7 +31,7 @@ class TweetListener(tweepy.StreamListener):
 
     def on_data(self, raw_data):
         clean_data = self.clean_tweet(raw_data)
-        self.producer.send(self.brand_name.replace("#", ""), clean_data)
+        producer.send(self.brand_name.replace("#", ""), clean_data)
         print(clean_data)
 
     def on_error(self, status_code):
@@ -44,14 +42,13 @@ class TweetListener(tweepy.StreamListener):
         return True
 
 
-def start_twitter_stream():
+if __name__ == "__main__":
+    brand = input("Enter a hashtag: ")
+    producer = KafkaProducer(bootstrap_servers="localhost:9092", api_version=(0, 10, 1),
+                             value_serializer=lambda m: json.dumps(m).encode('ascii'))
+
     listener = TweetListener(brand)
     auth = tweepy.OAuthHandler(credentials.API_KEY, credentials.API_SECRET_KEY)
     auth.set_access_token(credentials.ACCESS_TOKEN, credentials.ACCESS_TOKEN_SECRET)
     stream = tweepy.Stream(auth, listener, tweet_mode="extended")
     stream.filter(track=[brand], languages=["en"])
-
-
-if __name__ == "__main__":
-    brand = input("Enter a hashtag: ")
-    start_twitter_stream()
