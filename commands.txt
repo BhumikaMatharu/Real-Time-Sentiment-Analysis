@@ -1,3 +1,4 @@
+cd C:\Apache\kafka_2.12-2.5.0\bin\windows
 zookeeper-server-start.bat C:\Apache\kafka_2.12-2.5.0\config\zookeeper.properties
 kafka-server-start.bat C:\Apache\kafka_2.12-2.5.0\config\server.properties
 kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic google
