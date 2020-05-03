@@ -50,7 +50,6 @@ def analyze(time, rdd):
         for result in results:
             result["date"] = datetime.strptime(result["date"], "%Y-%m-%d %H:%M:%S")
             result["sentiment"] = json.loads(result["sentiment"])
-            print(result)
 
         elastic(results, "tweets", "doc")
 
