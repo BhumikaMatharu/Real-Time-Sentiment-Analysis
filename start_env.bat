@@ -1,6 +1,6 @@
 cd C:\Apache\kafka_2.12-2.5.0\bin\windows
 START "" zookeeper-server-start.bat C:\Apache\kafka_2.12-2.5.0\config\zookeeper.properties
-timeout 15
+timeout 20
 START "" kafka-server-start.bat C:\Apache\kafka_2.12-2.5.0\config\server.properties
 timeout 20
 cd C:\Users\prath\PycharmProjects\Real-Time-Sentiment-Analysis

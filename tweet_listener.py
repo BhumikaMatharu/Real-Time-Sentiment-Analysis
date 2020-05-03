@@ -27,7 +27,7 @@ class TweetListener(tweepy.StreamListener):
         tweet = dict()
 
         tweet["date"] = datetime.strptime(json_data["created_at"], '%a %b %d %H:%M:%S %z %Y') \
-            .replace(tzinfo=timezone.utc).astimezone(tz=None).strftime('%Y-%m-%d %H:%M:%S')
+            .astimezone(tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
 
         tweet["user"] = json_data["user"]["screen_name"]
 
