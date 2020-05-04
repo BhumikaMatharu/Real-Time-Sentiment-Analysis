@@ -23,7 +23,7 @@ sleep 15s
 echo "Elasticsearch started"
 echo ""
 echo "Starting Consumer"
-screen -S consumer -dm bash -c 'export PYSPARK_PYTHON=python3; cd $SPARK_HOME; sudo bin/spark-submit --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.0.0 /home/ubuntu/Real-Time-Sentiment-Analysis/tweet_spark_consumer.py'
+screen -S consumer -dm bash -c '[export PYSPARK_PYTHON=python3] && [cd $SPARK_HOME] && [sudo bin/spark-submit --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.0.0 /home/ubuntu/Real-Time-Sentiment-Analysis/tweet_spark_consumer.py]'
 sleep 10s
 echo "Consumer started"
 echo ""
