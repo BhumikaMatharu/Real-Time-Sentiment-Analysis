@@ -9,6 +9,7 @@ from pyspark.sql.functions import udf
 from pyspark.sql.types import *
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from datetime import datetime
+import os
 
 
 def get_sql_context(spark_context):
@@ -59,6 +60,7 @@ def analyze(time, rdd):
 
 
 if __name__ == "__main__":
+    os.environ["PYSPARK_PYTHON"] = "python3"
     # Create a SparkContext with the appName and set the logging level
     sc = SparkContext(appName="PythonStreaming")
     sc.setLogLevel("ERROR")
