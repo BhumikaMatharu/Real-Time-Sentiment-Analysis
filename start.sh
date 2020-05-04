@@ -22,14 +22,14 @@ screen -S elasticsearch -dm bin/elasticsearch
 sleep 15s
 echo "Elasticsearch started"
 echo ""
-cd /home/ubuntu/apache/spark-2.2.2-bin-hadoop2.7
-echo "Starting Consumer"
-screen -S consumer -dm sudo bin/spark-submit --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.0.0 /home/ubuntu/Real-Time-Sentiment-Analysis/tweet_spark_consumer.py
-sleep 10s
-echo "Consumer started"
-echo ""
 cd /home/ubuntu/elastic/kibana-6.4.2-linux-x86_64/
 echo "Starting Kibana"
 screen -S kibana -dm bin/kibana
 sleep 15s
 echo "Kibana started"
+echo ""
+cd /home/ubuntu/apache/spark-2.2.2-bin-hadoop2.7
+echo "Starting Consumer"
+screen -S spark -dm sudo bin/spark-submit --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.0.0 /home/ubuntu/Real-Time-Sentiment-Analysis/tweet_spark_consumer.py
+sleep 10s
+echo "Consumer started"
