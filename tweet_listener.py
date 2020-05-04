@@ -4,6 +4,7 @@ import tweepy
 import json
 from kafka import KafkaProducer
 import credentials
+import sys
 
 
 brand = str
@@ -58,7 +59,7 @@ class TweetListener(tweepy.StreamListener):
 
 if __name__ == "__main__":
     # Get the brand to be tracked from the user
-    brand = input("Enter a hashtag: ")
+    brand = sys.argv[1]
 
     # Initialize a Kafka Producer
     producer = KafkaProducer(bootstrap_servers="localhost:9092", api_version=(0, 10, 1),
