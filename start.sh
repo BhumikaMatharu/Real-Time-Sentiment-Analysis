@@ -5,7 +5,7 @@ sleep 20s
 screen -S kafka -dm sudo ./kafka-server-start.sh /home/ubuntu/apache/kafka_2.12-2.5.0/config/server.properties
 sleep 20s
 cd /home/ubuntu/Real-Time-Sentiment-Analysis/
-python3 tweet_listener.py
+screen -S producer python3 tweet_listener.py &
 sleep 15s
 cd /home/ubuntu/elastic/elasticsearch-6.4.2/
 screen -S elasticsearch -dm bin/elasticsearch
