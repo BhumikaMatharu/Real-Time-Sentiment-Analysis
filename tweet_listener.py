@@ -86,4 +86,5 @@ if __name__ == "__main__":
     auth = tweepy.OAuthHandler(credentials.API_KEY, credentials.API_SECRET_KEY)
     auth.set_access_token(credentials.ACCESS_TOKEN, credentials.ACCESS_TOKEN_SECRET)
     stream = tweepy.Stream(auth, listener, tweet_mode="extended")
-    stream.filter(track=[brand], languages=["en"])
+    # stream.filter(track=[brand], languages=["en"])
+    stream.filter(locations=[-180,-90,180,90], languages=["en"])

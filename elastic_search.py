@@ -6,17 +6,10 @@ def get_elastic():
     return Elasticsearch(['localhost:9200'], timeout=30)
 
 
-# def create_index(index):
-#     es_client = get_elastic()
-#     mapping =
-#
-#     response = es_client.indices.create(index=index, body=mapping)
-
-
 def elastic(doc, index, type):
     es_client = get_elastic()
 
-    statcnt = 0
+    count = 0
     actions = []
 
     for row in doc:
@@ -31,9 +24,9 @@ def elastic(doc, index, type):
                                                max_retries=5,
                                                raise_on_error=False, raise_on_exception=False):
         if not ok:
-            statcnt += 0
+            count += 0
             print(response)
         else:
-            statcnt += 1
+            count += 1
 
-    return statcnt
+    return count

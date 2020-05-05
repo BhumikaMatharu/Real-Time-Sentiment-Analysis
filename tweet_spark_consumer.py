@@ -27,6 +27,7 @@ def sentiment_analysis(tweet):
 
     return json.dumps(scores)
 
+
 # The function called for each RDD
 def analyze(time, rdd):
     print("========= %s =========" % str(time))
