@@ -45,13 +45,13 @@ def analyze(time, rdd):
         # Add the result to the data as column "sentiment"
         analysis = udf(lambda x: sentiment_analysis(x), returnType=StringType())
         df = df.withColumn("sentiment", lit(analysis(df.text)))
-        print(df.take(10))
+        # print(df.take(10))
         results = df.toJSON().map(lambda j: json.loads(j)).collect()
 
         for result in results:
             result["date"] = datetime.strptime(result["date"], "%Y-%m-%d %H:%M:%S")
             result["sentiment"] = json.loads(result["sentiment"])
-
+            print(result)
         elastic(results, "lockdown", "doc")
 
     except Exception as e:
@@ -60,13 +60,13 @@ def analyze(time, rdd):
 
 
 if __name__ == "__main__":
-    os.environ["PYSPARK_PYTHON"] = "python3"
+    # os.environ["PYSPARK_PYTHON"] = "python3"
     # Create a SparkContext with the appName and set the logging level
     sc = SparkContext(appName="PythonStreaming")
     sc.setLogLevel("ERROR")
 
     # Create a Streaming Context which waits for 3 seconds to consume the next package of tweets
-    ssc = StreamingContext(sc, 3)
+    ssc = StreamingContext(sc, 5)
 
     # Initialize a Kafka Consumer Stream
     kafka_stream = KafkaUtils.createStream(ssc, "localhost:2181", "consumer-group", {"lockdown": 1})
