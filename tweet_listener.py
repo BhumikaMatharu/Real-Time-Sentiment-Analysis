@@ -25,8 +25,8 @@ class TweetListener(tweepy.StreamListener):
     # Utility function to clean the tweets
     def clean_tweet(self, raw_data):
         json_data = json.loads(raw_data)
+        # print(json_data["coordinates"])
         tweet = dict()
-
         tweet["date"] = datetime.strptime(json_data["created_at"], '%a %b %d %H:%M:%S %z %Y') \
             .astimezone(tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
 
@@ -39,13 +39,23 @@ class TweetListener(tweepy.StreamListener):
             tweet["text"] = self.remove_emojis(json_data["text"])\
                 .translate(str.maketrans('', '', string.punctuation)).replace("\n", " ")
 
+        tweet["location"] = dict()
+        if json_data["coordinates"] is not None:
+            print(json_data["coordinates"])
+            longitude = json_data["coordinates"]["coordinates"][0]
+            latitude = json_data["coordinates"]["coordinates"][1]
+            tweet["location"]["lat"] = latitude
+            tweet["location"]["lon"] = longitude
+        else:
+            tweet["location"]["lat"] = None
+            tweet["location"]["lon"] = None
         return json.dumps(tweet)
 
     # Defines the behaviour on receiving data
     def on_data(self, raw_data):
         clean_data = self.clean_tweet(raw_data)
         producer.send(self.brand_name.replace("#", ""), clean_data)
-        print(clean_data)
+        # print(clean_data)
 
     # Defines the behaviour on error
     def on_error(self, status_code):
