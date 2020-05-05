@@ -40,30 +40,25 @@ class TweetListener(tweepy.StreamListener):
                 tweet["text"] = self.remove_emojis(json_data["text"])\
                     .translate(str.maketrans('', '', string.punctuation)).replace("\n", " ")
 
-            tweet["location"] = dict()
             if json_data["coordinates"] is not None:
                 print(json_data["coordinates"])
                 longitude = json_data["coordinates"]["coordinates"][0]
                 latitude = json_data["coordinates"]["coordinates"][1]
-                tweet["location"] = dict()
-                tweet["location"]["lat"] = latitude
-                tweet["location"]["lon"] = longitude
-                loc = 1
+                tweet["location"] = str(latitude) + "," + str(longitude)
             else:
-                tweet["location"]["lat"] = ""
-                tweet["location"]["lon"] = ""
-                loc = 0
-            return json.dumps(tweet), loc
+                tweet["location"] = str("")
+
+            return json.dumps(tweet)
+
         except Exception as e:
             return True
 
     # Defines the behaviour on receiving data
     def on_data(self, raw_data):
         try:
-            clean_data, loc = self.clean_tweet(raw_data)
-            if loc == 1:
-                producer.send(self.brand_name.replace("#", ""), clean_data)
-                print(clean_data)
+            clean_data = self.clean_tweet(raw_data)
+            producer.send(self.brand_name.replace("#", ""), clean_data)
+            print(clean_data)
         except Exception as e:
             return True
 
@@ -91,5 +86,4 @@ if __name__ == "__main__":
     auth = tweepy.OAuthHandler(credentials.API_KEY, credentials.API_SECRET_KEY)
     auth.set_access_token(credentials.ACCESS_TOKEN, credentials.ACCESS_TOKEN_SECRET)
     stream = tweepy.Stream(auth, listener, tweet_mode="extended")
-    # stream.filter(track=[brand], languages=["en"])
-    stream.filter(locations=[-180,-90,180,90], languages=["en"])
+    stream.filter(track=[brand], languages=["en"])

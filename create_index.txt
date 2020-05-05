@@ -1,0 +1,54 @@
+{
+    "settings": {
+        "index": {
+            "number_of_shards": "5",
+            "number_of_replicas": "1"
+        }
+    },
+    "mappings": {
+        "doc": {
+            "properties": {
+                "date": {
+                    "type": "date"
+                },
+                "location": {
+                    "type": "geo_point"
+                },
+                "sentiment": {
+                    "properties": {
+                        "compound": {
+                            "type": "float"
+                        },
+                        "neg": {
+                            "type": "float"
+                        },
+                        "neu": {
+                            "type": "float"
+                        },
+                        "pos": {
+                            "type": "float"
+                        }
+                    }
+                },
+                "text": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                        }
+                    }
+                },
+                "user": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

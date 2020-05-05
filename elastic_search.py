@@ -6,6 +6,13 @@ def get_elastic():
     return Elasticsearch(['localhost:9200'], timeout=30)
 
 
+# def create_index(index):
+#     es_client = get_elastic()
+#     mapping =
+#
+#     response = es_client.indices.create(index=index, body=mapping)
+
+
 def elastic(doc, index, type):
     es_client = get_elastic()
 

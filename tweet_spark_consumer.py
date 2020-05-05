@@ -9,7 +9,6 @@ from pyspark.sql.functions import udf
 from pyspark.sql.types import *
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from datetime import datetime
-import os
 
 
 def get_sql_context(spark_context):
@@ -45,13 +44,13 @@ def analyze(time, rdd):
         # Add the result to the data as column "sentiment"
         analysis = udf(lambda x: sentiment_analysis(x), returnType=StringType())
         df = df.withColumn("sentiment", lit(analysis(df.text)))
-        # print(df.take(10))
         results = df.toJSON().map(lambda j: json.loads(j)).collect()
 
         for result in results:
             result["date"] = datetime.strptime(result["date"], "%Y-%m-%d %H:%M:%S")
             result["sentiment"] = json.loads(result["sentiment"])
             print(result)
+
         elastic(results, "lockdown", "doc")
 
     except Exception as e:
@@ -60,7 +59,6 @@ def analyze(time, rdd):
 
 
 if __name__ == "__main__":
-    # os.environ["PYSPARK_PYTHON"] = "python3"
     # Create a SparkContext with the appName and set the logging level
     sc = SparkContext(appName="PythonStreaming")
     sc.setLogLevel("ERROR")
