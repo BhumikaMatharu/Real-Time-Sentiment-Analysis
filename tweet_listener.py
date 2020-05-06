@@ -36,11 +36,11 @@ class TweetListener(tweepy.StreamListener):
             if "extended_tweet" in json_data:
                 #tweet["text"] = self.remove_emojis(json_data["extended_tweet"]["full_text"])\
                     #.translate(str.maketrans('', '', string.punctuation)).replace("\n", " ")
-                tweet["text"] = p.clean(json_data["extended_tweet"]["full_text"]
+                tweet["text"] = p.clean(json_data["extended_tweet"]["full_text"])
             else:
                 #tweet["text"] = self.remove_emojis(json_data["text"])\
                     #.translate(str.maketrans('', '', string.punctuation)).replace("\n", " ")
-                tweet["text"] = p.clean(json_data["text"]
+                tweet["text"] = p.clean(json_data["text"])
 
             if json_data["coordinates"] is not None:
                 print(json_data["coordinates"])
