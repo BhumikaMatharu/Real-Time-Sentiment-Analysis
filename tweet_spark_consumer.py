@@ -52,7 +52,7 @@ def analyze(time, rdd):
             result["sentiment"] = json.loads(result["sentiment"])
             print(result)
 
-        elastic(results, "lockdown", "doc")
+        elastic(results, "google", "doc")
 
     except Exception as e:
         print(e)
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     ssc = StreamingContext(sc, 5)
 
     # Initialize a Kafka Consumer Stream
-    kafka_stream = KafkaUtils.createStream(ssc, "localhost:2181", "consumer-group", {"lockdown": 1})
+    kafka_stream = KafkaUtils.createStream(ssc, "localhost:2181", "consumer-group", {"google": 1})
 
     # For each RDD in the steam call analyze()
     lines = kafka_stream.map(lambda x: json.loads(x[1]))

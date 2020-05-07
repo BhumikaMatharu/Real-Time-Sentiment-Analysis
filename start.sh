@@ -12,7 +12,7 @@ echo "Kafka started"
 echo ""
 cd /home/ubuntu/Real-Time-Sentiment-Analysis/
 echo "Starting Producer"
-screen -S producer -dm python3 tweet_listener.py lockdown
+screen -S producer -dm python3 tweet_listener.py google
 sleep 15s
 echo "Producer started"
 echo ""
